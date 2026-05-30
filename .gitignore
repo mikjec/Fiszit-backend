@@ -1,0 +1,11 @@
+# Folder z ciężkimi paczkami (ściąga się go samemu przez npm install)
+node_modules/
+
+# Plik ze środowiskiem (hasła, klucze API - NIGDY nie wrzucaj na GitHub!)
+.env
+
+# Pliki systemowe Maca
+.DS_Store
+
+# Logi (jeśli serwer by je wypluwał)
+npm-debug.log
