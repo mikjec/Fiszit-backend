@@ -1,7 +1,21 @@
 import express from 'express'
 import cors from 'cors'
+import mongoose from 'mongoose'
+import 'dotenv/config'
 
 const app = express()
+
+const connectDB = async () => {
+	try {
+		const conn = await mongoose.connect(process.env.MONGO_URI)
+		console.log(`Połączono z bazą danych: ${conn.connection.host}`)
+	} catch (error) {
+		console.error(`Błąd: ${error.message}`)
+		process.exit(1) // Wyjście z procesu w przypadku błędu połączenia
+	}
+}
+
+connectDB()
 
 // Middlewares
 app.use(cors()) // Pozwala na strzały z frontendu
