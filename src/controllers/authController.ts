@@ -19,10 +19,11 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
 	try {
 		const { username, email, password } = req.body
 
-		const { success, data } = registerSchema.safeParse({ username, email, password })
+		const result = registerSchema.safeParse({ username, email, password })
 
-		if (!success) {
-			res.status(400).json({ message: 'Nieprawidłowe dane rejestracji', errors: data })
+		if (!result.success) {
+			const errors = result.error.flatten().fieldErrors
+			res.status(400).json({ message: 'Nieprawidłowe dane rejestracji', errors })
 			return
 		}
 
@@ -31,7 +32,7 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
 		})
 
 		if (existingUser) {
-			res.status(400).json({ message: 'Użytkownik już istnieje' })
+			res.status(401).json({ message: 'Użytkownik już istnieje' })
 			return
 		}
 
@@ -58,12 +59,12 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
 export const login = async (req: AuthRequest, res: Response): Promise<void> => {
 	try {
 		const { email, password } = req.body
+		console.log(email, password)
 
-		// Szukanie użytkownika
 		const user = await User.findOne({ email })
 
 		if (!user) {
-			res.status(400).json({ message: 'Użytkownik nie znaleziony' })
+			res.status(401).json({ message: 'Nieprawidłowy login lub hasło' })
 			return
 		}
 
@@ -71,7 +72,7 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
 		const isPasswordValid = await bcryptjs.compare(password, user.password)
 
 		if (!isPasswordValid) {
-			res.status(400).json({ message: 'Nieprawidłowe hasło' })
+			res.status(401).json({ message: 'Nieprawidłowy login lub hasło' })
 			return
 		}
 

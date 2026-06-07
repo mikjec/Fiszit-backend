@@ -15,14 +15,14 @@ app.use(express.json())
 connectDB()
 
 // Test route
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
 	console.log(req.body)
 	res.json({ message: 'Witaj w nowym API Fiszit!' })
 })
 
 // Routes
-app.use('/auth', authRoutes)
-app.use('/decks', flashcardRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/decks', flashcardRoutes)
 
 // Nasłuchiwanie na porcie
 const PORT = process.env.PORT || 5000
