@@ -59,7 +59,6 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
 export const login = async (req: AuthRequest, res: Response): Promise<void> => {
 	try {
 		const { email, password } = req.body
-		console.log(email, password)
 
 		const user = await User.findOne({ email })
 
@@ -68,7 +67,6 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
 			return
 		}
 
-		// Sprawdzenie hasła
 		const isPasswordValid = await bcryptjs.compare(password, user.password)
 
 		if (!isPasswordValid) {
@@ -76,7 +74,6 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
 			return
 		}
 
-		// Generowanie JWT
 		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, { expiresIn: '24h' })
 
 		res.status(200).json({
@@ -87,5 +84,16 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
 	} catch (error) {
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error'
 		res.status(500).json({ message: 'Błąd logowania', error: errorMessage })
+	}
+}
+
+export const getCurrentUser = async (req: AuthRequest, res: Response): Promise<void> => {
+	try {
+		const user = await User.findOne({ _id: req.userId }, { _id: false, username: true, email: true })
+
+		res.status(200).json(user)
+	} catch (error) {
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+		res.status(500).json({ message: 'Błąd pobierania danych użytkownika', error: errorMessage })
 	}
 }

@@ -14,13 +14,6 @@ app.use(express.json())
 // Połączenie z bazą danych
 connectDB()
 
-// Test route
-app.get('/api', (req, res) => {
-	console.log(req.body)
-	res.json({ message: 'Witaj w nowym API Fiszit!' })
-})
-
-// Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/decks', flashcardRoutes)
 
